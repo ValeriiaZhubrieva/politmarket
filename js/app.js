@@ -973,6 +973,11 @@
         shareBtn.addEventListener("click", (() => {
             shareSocialBlock.classList.toggle("_active");
         }));
+        if (document.querySelector(".result__grafik-text")) {
+            outNum(83, "result__grafik-text-1");
+            outNum(54, "result__grafik-text-2");
+            outNum(19, "result__grafik-text-3");
+        }
     }
     if (document.querySelector(".test-1")) {
         const option1 = document.querySelector(".test__option-1");
