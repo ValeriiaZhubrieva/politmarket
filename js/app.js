@@ -952,19 +952,120 @@
             }));
         }
     }), 0);
-    if (document.querySelector("#share__items")) {
-        const timeRange = 900;
-        const stepRange = 1;
-        function outNum(num, el) {
-            let l = document.querySelector("." + el);
-            let n = 0;
-            let t = Math.round(timeRange / (num / stepRange));
-            let interval = setInterval((() => {
-                n += stepRange;
-                if (n == num) clearInterval(interval);
-                l.innerHTML = n + "%";
-            }), t);
+    function DynamicAdapt(type) {
+        this.type = type;
+    }
+    DynamicAdapt.prototype.init = function() {
+        const _this = this;
+        this.оbjects = [];
+        this.daClassname = "_dynamic_adapt_";
+        this.nodes = document.querySelectorAll("[data-da]");
+        for (let i = 0; i < this.nodes.length; i++) {
+            const node = this.nodes[i];
+            const data = node.dataset.da.trim();
+            const dataArray = data.split(",");
+            const оbject = {};
+            оbject.element = node;
+            оbject.parent = node.parentNode;
+            оbject.destination = document.querySelector(dataArray[0].trim());
+            оbject.breakpoint = dataArray[1] ? dataArray[1].trim() : "767";
+            оbject.place = dataArray[2] ? dataArray[2].trim() : "last";
+            оbject.index = this.indexInParent(оbject.parent, оbject.element);
+            this.оbjects.push(оbject);
         }
+        this.arraySort(this.оbjects);
+        this.mediaQueries = Array.prototype.map.call(this.оbjects, (function(item) {
+            return "(" + this.type + "-width: " + item.breakpoint + "px)," + item.breakpoint;
+        }), this);
+        this.mediaQueries = Array.prototype.filter.call(this.mediaQueries, (function(item, index, self) {
+            return Array.prototype.indexOf.call(self, item) === index;
+        }));
+        for (let i = 0; i < this.mediaQueries.length; i++) {
+            const media = this.mediaQueries[i];
+            const mediaSplit = String.prototype.split.call(media, ",");
+            const matchMedia = window.matchMedia(mediaSplit[0]);
+            const mediaBreakpoint = mediaSplit[1];
+            const оbjectsFilter = Array.prototype.filter.call(this.оbjects, (function(item) {
+                return item.breakpoint === mediaBreakpoint;
+            }));
+            matchMedia.addListener((function() {
+                _this.mediaHandler(matchMedia, оbjectsFilter);
+            }));
+            this.mediaHandler(matchMedia, оbjectsFilter);
+        }
+    };
+    DynamicAdapt.prototype.mediaHandler = function(matchMedia, оbjects) {
+        if (matchMedia.matches) for (let i = 0; i < оbjects.length; i++) {
+            const оbject = оbjects[i];
+            оbject.index = this.indexInParent(оbject.parent, оbject.element);
+            this.moveTo(оbject.place, оbject.element, оbject.destination);
+        } else for (let i = оbjects.length - 1; i >= 0; i--) {
+            const оbject = оbjects[i];
+            if (оbject.element.classList.contains(this.daClassname)) this.moveBack(оbject.parent, оbject.element, оbject.index);
+        }
+    };
+    DynamicAdapt.prototype.moveTo = function(place, element, destination) {
+        element.classList.add(this.daClassname);
+        if ("last" === place || place >= destination.children.length) {
+            destination.insertAdjacentElement("beforeend", element);
+            return;
+        }
+        if ("first" === place) {
+            destination.insertAdjacentElement("afterbegin", element);
+            return;
+        }
+        destination.children[place].insertAdjacentElement("beforebegin", element);
+    };
+    DynamicAdapt.prototype.moveBack = function(parent, element, index) {
+        element.classList.remove(this.daClassname);
+        if (void 0 !== parent.children[index]) parent.children[index].insertAdjacentElement("beforebegin", element); else parent.insertAdjacentElement("beforeend", element);
+    };
+    DynamicAdapt.prototype.indexInParent = function(parent, element) {
+        const array = Array.prototype.slice.call(parent.children);
+        return Array.prototype.indexOf.call(array, element);
+    };
+    DynamicAdapt.prototype.arraySort = function(arr) {
+        if ("min" === this.type) Array.prototype.sort.call(arr, (function(a, b) {
+            if (a.breakpoint === b.breakpoint) {
+                if (a.place === b.place) return 0;
+                if ("first" === a.place || "last" === b.place) return -1;
+                if ("last" === a.place || "first" === b.place) return 1;
+                return a.place - b.place;
+            }
+            return a.breakpoint - b.breakpoint;
+        })); else {
+            Array.prototype.sort.call(arr, (function(a, b) {
+                if (a.breakpoint === b.breakpoint) {
+                    if (a.place === b.place) return 0;
+                    if ("first" === a.place || "last" === b.place) return 1;
+                    if ("last" === a.place || "first" === b.place) return -1;
+                    return b.place - a.place;
+                }
+                return b.breakpoint - a.breakpoint;
+            }));
+            return;
+        }
+    };
+    const da = new DynamicAdapt("max");
+    da.init();
+    const timeRange = 900;
+    const stepRange = 1;
+    function outNum(num, el) {
+        let l = document.querySelector("." + el);
+        let n = 0;
+        let t = Math.round(timeRange / (num / stepRange));
+        let interval = setInterval((() => {
+            n += stepRange;
+            if (n == num) clearInterval(interval);
+            l.innerHTML = n + "%";
+        }), t);
+    }
+    if (document.querySelector(".home-video__soc")) {
+        outNum(83, "result__grafik-text-1");
+        outNum(54, "result__grafik-text-2");
+        outNum(19, "result__grafik-text-3");
+    }
+    if (document.querySelector("#share__items")) {
         outNum(83, "share__item-title--83 span");
         outNum(54, "share__item-title--54 span");
         outNum(19, "share__item-title--19 span");
@@ -982,7 +1083,6 @@
     if (document.querySelector(".test-1")) {
         const option1 = document.querySelector(".test__option-1");
         const option2 = document.querySelector(".test__option-2");
-        const option3 = document.querySelector(".test__option-3");
         const optionsEl = document.querySelectorAll(".test__option");
         const questionBlock = document.querySelector(".test__question");
         const percentBlock = document.querySelector(".test__header-grafik span");
@@ -990,116 +1090,122 @@
         let percent = 0;
         const questions = [ {
             question: "Вы поддерживаете политический курс нынешнего Президента России? 1",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы поддерживаете политический курс нынешнего Президента России? 2",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы поддерживаете политический курс нынешнего Президента ? 3",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы поддерживаете курс нынешнего Президента России? 4",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы поддерживаете политический курс нынешнего Президента России? 5",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы опровергаете политический курс  Президента России? 6",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы поддерживаете политический курс нынешнего Президента России? 7",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы поддерживаете политический курс нынешнего Президента России? 8",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы поддерживаете политический курс нынешнего Президента ? 9",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы поддерживаете курс нынешнего Президента России? 10",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы поддерживаете политический курс нынешнего Президента России? 11",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы опровергаете политический курс  Президента России? 12",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы поддерживаете политический курс нынешнего Президента России? 13",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы поддерживаете политический курс нынешнего Президента России? 14",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы поддерживаете политический курс нынешнего Президента ? 15",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы поддерживаете курс нынешнего Президента России? 16",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы поддерживаете политический курс нынешнего Президента России? 17",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы поддерживаете курс нынешнего Президента России? 18",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы поддерживаете политический курс нынешнего Президента России? 19",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы опровергаете политический курс  Президента России? 20",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы поддерживаете курс нынешнего Президента России? 21",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы поддерживаете политический курс нынешнего Президента России? 22",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы опровергаете политический курс  Президента России? 23",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы поддерживаете политический курс нынешнего Президента России? 24",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы поддерживаете политический курс нынешнего Президента России? 25",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы поддерживаете политический курс нынешнего Президента ? 26",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы поддерживаете курс нынешнего Президента России? 27",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы поддерживаете политический курс нынешнего Президента России? 28",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы поддерживаете политический курс нынешнего Президента России? 29",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         }, {
             question: "Вы поддерживаете политический курс нынешнего Президента России? 30",
-            options: [ "Да", "Нет", "Не знаю" ]
+            options: [ "Скорее да", "Скорее нет" ]
         } ];
         let indexOfQuestion = 0;
         const load = arr => {
             questionBlock.innerHTML = arr[indexOfQuestion].question;
             option1.innerHTML = arr[indexOfQuestion].options[0];
             option2.innerHTML = arr[indexOfQuestion].options[1];
-            option3.innerHTML = arr[indexOfQuestion].options[2];
             percent += 3.3;
             percentBlock.innerHTML = percent.toFixed(0) + "%";
             percentTotal.style.strokeDashoffset = `calc(182 - (182 * ${percent}) / 100)`;
         };
         load(questions);
+        document.querySelector(".test__body");
         optionsEl.forEach((el => {
             el.addEventListener("click", (() => {
                 el.classList.add("_active");
+                questionBlock.classList.add("anim");
                 indexOfQuestion++;
                 if (indexOfQuestion >= questions.length) setTimeout((() => {
                     window.location.href = "result.html";
-                }), 500); else setTimeout((() => {
-                    load(questions);
-                    el.classList.remove("_active");
-                }), 500);
+                }), 500); else {
+                    setTimeout((() => {
+                        questionBlock.classList.remove("anim");
+                    }), 1e3);
+                    setTimeout((() => {
+                        load(questions);
+                        el.classList.remove("_active");
+                    }), 500);
+                }
             }));
         }));
     }
