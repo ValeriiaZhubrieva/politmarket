@@ -1081,128 +1081,23 @@
         }
     }
     if (document.querySelector(".test-1")) {
-        const option1 = document.querySelector(".test__option-1");
-        const option2 = document.querySelector(".test__option-2");
+        document.querySelector(".test__option-1");
+        document.querySelector(".test__option-2");
         const optionsEl = document.querySelectorAll(".test__option");
         const questionBlock = document.querySelector(".test__question");
-        const percentBlock = document.querySelector(".test__header-grafik span");
-        const percentTotal = document.querySelector("#percent__total");
-        let percent = 0;
-        const questions = [ {
-            question: "Вы поддерживаете политический курс нынешнего Президента России? 1",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы поддерживаете политический курс нынешнего Президента России? 2",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы поддерживаете политический курс нынешнего Президента ? 3",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы поддерживаете курс нынешнего Президента России? 4",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы поддерживаете политический курс нынешнего Президента России? 5",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы опровергаете политический курс  Президента России? 6",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы поддерживаете политический курс нынешнего Президента России? 7",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы поддерживаете политический курс нынешнего Президента России? 8",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы поддерживаете политический курс нынешнего Президента ? 9",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы поддерживаете курс нынешнего Президента России? 10",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы поддерживаете политический курс нынешнего Президента России? 11",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы опровергаете политический курс  Президента России? 12",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы поддерживаете политический курс нынешнего Президента России? 13",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы поддерживаете политический курс нынешнего Президента России? 14",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы поддерживаете политический курс нынешнего Президента ? 15",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы поддерживаете курс нынешнего Президента России? 16",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы поддерживаете политический курс нынешнего Президента России? 17",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы поддерживаете курс нынешнего Президента России? 18",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы поддерживаете политический курс нынешнего Президента России? 19",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы опровергаете политический курс  Президента России? 20",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы поддерживаете курс нынешнего Президента России? 21",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы поддерживаете политический курс нынешнего Президента России? 22",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы опровергаете политический курс  Президента России? 23",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы поддерживаете политический курс нынешнего Президента России? 24",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы поддерживаете политический курс нынешнего Президента России? 25",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы поддерживаете политический курс нынешнего Президента ? 26",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы поддерживаете курс нынешнего Президента России? 27",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы поддерживаете политический курс нынешнего Президента России? 28",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы поддерживаете политический курс нынешнего Президента России? 29",
-            options: [ "Скорее да", "Скорее нет" ]
-        }, {
-            question: "Вы поддерживаете политический курс нынешнего Президента России? 30",
-            options: [ "Скорее да", "Скорее нет" ]
-        } ];
+        document.querySelector(".test__header-grafik span");
+        document.querySelector("#percent__total");
         let indexOfQuestion = 0;
-        const load = arr => {
-            questionBlock.innerHTML = arr[indexOfQuestion].question;
-            option1.innerHTML = arr[indexOfQuestion].options[0];
-            option2.innerHTML = arr[indexOfQuestion].options[1];
-            percent += 3.3;
-            percentBlock.innerHTML = percent.toFixed(0) + "%";
-            percentTotal.style.strokeDashoffset = `calc(182 - (182 * ${percent}) / 100)`;
-        };
-        load(questions);
         document.querySelector(".test__body");
         optionsEl.forEach((el => {
             el.addEventListener("click", (() => {
                 el.classList.add("_active");
                 questionBlock.classList.add("anim");
-                indexOfQuestion++;
-                if (indexOfQuestion >= questions.length) setTimeout((() => {
-                    window.location.href = "result.html";
-                }), 500); else {
+                if (indexOfQuestion >= questions.length) setTimeout((() => {}), 500); else {
                     setTimeout((() => {
                         questionBlock.classList.remove("anim");
                     }), 1e3);
                     setTimeout((() => {
-                        load(questions);
                         el.classList.remove("_active");
                     }), 500);
                 }
